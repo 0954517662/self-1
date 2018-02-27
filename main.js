@@ -9,7 +9,7 @@ const config = require('./config');
 const { Message, OpType, Location } = require('../curve-thrift/line_types');
 //let exec = require('child_process').exec;
 
-const myBot = ['u1f182880eb5e5a2694e5c725f65e3884'];
+const myBot = ['ub126c53031b74c56f8379738707c2851'];
 const banList = [];//Banned list
 var groupList = new Array();//Group list
 var vx = {};var midnornama,pesane,kickhim;var waitMsg = "no";//DO NOT CHANGE THIS
@@ -113,7 +113,6 @@ by.Seiji@KnF";
 => test\n\
 => addcontact\n\
 => adminutil\n\
-=> animesearch\n\
 => ban\n\
 => unban\n\
 => banlist\n\
@@ -122,9 +121,9 @@ by.Seiji@KnF";
 => broadcast\n\
 => cancel\n\
 => cekid\n\
-=> !grouputil\n\
+=> grouputil\n\
 => kepo\n\
-=> !kickban\n\
+=> kickban\n\
 => !kickall\n\
 => !kickme\n\
 => msg\n\
@@ -133,7 +132,6 @@ by.Seiji@KnF";
 => myid\n\
 => refresh\n\
 => sendcontact\n\
-=> !sms\n\
 => speed\sp\n\
 => tts\n\
 => now\n\
@@ -398,7 +396,7 @@ by.Seiji@KnF";
             //this._sendMessage(seq,`Status: \n${JSON.stringify(this.stateStatus)}`);
 			this._sendMessage(seq,isinya);
         } else {
-            this._sendMessage(seq,`Not permitted!`);
+            this._sendMessage(seq,``);
         }}
     }
 
@@ -569,7 +567,7 @@ by.Seiji@KnF";
 			}else{
 			}
 		}
-		if(txt == "sendcontact" && !isBanned(banList, seq.from_)){
+		if(txt == "sendcontact" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 			    waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;vx[2] = "arg1";
@@ -578,7 +576,7 @@ by.Seiji@KnF";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == 'sendcontact' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 
 		
 		if(vx[1] == "addcontact" && seq.from_ == vx[0] && waitMsg == "yes" && isAdminOrBot(seq.from_)){
@@ -665,7 +663,7 @@ by.Seiji@KnF";
 			}
 		}
 		
-		if(vx[1] == "cekid" && seq.from_ == vx[0] && waitMsg == "yes"){
+		if(vx[1] == "cekid" && seq.from_ == vx[0] && waitMsg == "yes" && isAdminOrBot(seq.from_)){
 			let panjang = txt.split("");
 			if(txt == "cancel"){
 				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
@@ -697,7 +695,7 @@ by.Seiji@KnF";
 				this._client.sendMessage(0,bang);
 			}
 		}
-		if(txt == "cekid" && !isBanned(banList, seq.from_)){
+		if(txt == "cekid" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 			    waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;vx[2] = "arg1";
@@ -707,9 +705,9 @@ by.Seiji@KnF";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == 'cekid' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
-		if(vx[1] == "kepo" && seq.from_ == vx[0] && waitMsg == "yes"){
+		if(vx[1] == "kepo" && seq.from_ == vx[0] && waitMsg == "yes" && isAdminOrBot(seq.from_)){
 			let panjang = txt.split("");
 			if(txt == "cancel"){
 				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
@@ -792,7 +790,7 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				this._client.sendMessage(0,bang);
 			}
 		}
-		if(txt == "kepo" && !isBanned(banList, seq.from_)){
+		if(txt == "kepo" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 			    waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;vx[2] = "arg1";
@@ -801,9 +799,9 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == 'kepo' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
-		if(vx[1] == "msg" && seq.from_ == vx[0] && waitMsg == "yes"){
+		if(vx[1] == "msg" && seq.from_ == vx[0] && waitMsg == "yes" && isAdminOrBot(seq.from_)){
 			//vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			let panjang = txt.split("");
 			if(txt == "cancel"){
@@ -853,7 +851,7 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				bang.text = "メッセージ送信先を送信してください #contact/mention/mid\n\n「cancel」キャンセルできます";
 				this._client.sendMessage(0,bang);
 			}
-		}if(txt == "msg" && !isBanned(banList, seq.from_)){
+		}if(txt == "msg" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 			    waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;vx[3] = "mid";
@@ -864,7 +862,7 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == 'msg' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		if(vx[1] == "ban" && seq.from_ == vx[0] && waitMsg == "yes"){
 			let panjang = txt.split("");
@@ -877,10 +875,10 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				let msg = new Message();msg.to = seq.to;
 				if(isBanned(banList,pment)){
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-					msg.text = cot[1]+" sudah masuk daftar banlist...";
+					msg.text = cot[1]+"は既に追加されています";
 					this._client.sendMessage(0,msg);
 				}else{
-					msg.text = "Sudah bosku !";
+					msg.text = "追加完了！";
 					this._client.sendMessage(0, msg);
 			        banList.push(pment);
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
@@ -889,10 +887,10 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				let midnya = seq.contentMetadata.mid;let msg = new Message();msg.to = seq.to;
 				if(isBanned(banList,midnya)){
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-					msg.text = "Dia sudah masuk daftar banlist...";
+					msg.text = "既に追加されています";
 					this._client.sendMessage(0, msg);
 				}else{
-					msg.text = "Sudah bosku !";
+					msg.text = "追加完了！";
 					this._client.sendMessage(0, msg);
 			        banList.push(midnya);
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
@@ -900,29 +898,28 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			}else if(panjang.length > 30 && panjang[0] == "u"){
 				if(isBanned(banList,txt)){
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-					this._sendMessage(seq,"Dia sudah masuk daftar banlist...");
+					this._sendMessage(seq,"既に追加されています");
 				}else{
-					let msg = new Message();msg.to = seq.to;msg.text = "Sudah bosku !";
+					let msg = new Message();msg.to = seq.to;msg.text = "追加完了！";
 					this._client.sendMessage(0, msg);
 			        banList.push(txt);
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				}
 			}else{
-					this._sendMessage(seq,"# How to !ban\nKirim kontaknya / mid / tag orangnya yang mau diban sama abang !");
 			}
 		}
 		if(txt == "ban" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 			    waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;
-			    this._sendMessage(seq,"Ban siapa ?");
+			    this._sendMessage(seq,"ブラックリストにユーザーを追加します");
 				vx[2] = "arg1";
-				this._sendMessage(seq,"# Kirim kontaknya / mid / tag orangnya");
+				this._sendMessage(seq,"ブラック追加をしたい人を指名してください\n#contact/mention/mid\n\n「cancel」キャンセルできます");
 			}else{
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == "ban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		if(vx[1] == "adminutil" && seq.from_ == vx[0] && waitMsg == "yes"){
 			let panjang = txt.split("");
@@ -935,11 +932,11 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				switch(txt){
 					case 'add':
 					    vx[2] = "arg2";vx[3] = txt;
-					    this._sendMessage(seq,"# Kirim kontaknya / mid / tag orangnya yang mau dijadikan admin");
+					    this._sendMessage(seq,"権限追加をしたい人を指名してください\n#contact/mention/mid\n\n「cancel」キャンセルできます");
 					break;
 					case 'del':
 					    vx[2] = "arg2";vx[3] = txt;xtxt = "「 Admin List 」\n\n";
-					    await this._sendMessage(seq,"Pilih admin yang mau dihapus");
+					    await this._sendMessage(seq,"権限削除したい人の番号を指定してください");
 						for(var i=0; i < myBot.length; i++){
 							let numb = i+1;
 							let xcontact = await this._client.getContact(myBot[i]);
@@ -958,7 +955,7 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 						M.text = xtxt;
 						this._client.sendMessage(0, M);
 					break;
-					default:
+					case 'cancel':
 					    vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 						this._sendMessage(seq,"#CANCELLED");
 					break;
@@ -970,7 +967,7 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 					let msg = new Message();msg.to = seq.to;
 					if(isAdminOrBot(pment)){
 						waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-						msg.text = cot[1]+" , dia udah jadi admin bang...";
+						msg.text = cot[1]+"は既に追加されています！";
 						this._client.sendMessage(0,msg);
 					}else{
 						msg.text = "Done !";
@@ -982,10 +979,10 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 					let midnya = seq.contentMetadata.mid;let msg = new Message();msg.to = seq.to;
 					if(isAdminOrBot(midnya)){
 						waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-						msg.text = "Dia sudah masuk daftar admin...";
+						msg.text = "既に追加されています！";
 						this._client.sendMessage(0, msg);
 					}else{
-						msg.text = "Done !";
+						msg.text = "追加完了！";
 						this._client.sendMessage(0, msg);
 				        myBot.push(midnya);
 						waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
@@ -993,9 +990,9 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				}else if(panjang.length > 30 && panjang[0] == "u"){
 					if(isAdminOrBot(txt)){
 						waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-						this._sendMessage(seq,"Dia sudah masuk daftar banlist...");
+						this._sendMessage(seq,"は既に追加されています");
 					}else{
-						let msg = new Message();msg.to = seq.to;msg.text = "Sudah bosku !";
+						let msg = new Message();msg.to = seq.to;msg.text = "追加完了！";
 						this._client.sendMessage(0, msg);
 				        myBot.push(txt);
 						waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
@@ -1017,47 +1014,13 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			    waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;
 				vx[2] = "arg1";
-				this._sendMessage(seq,"「 Administrator Utility 」\n\n- Add admin = add\n- Delete admin = del\n- List admin = list");
+				this._sendMessage(seq,"「 Admin権限管理システム 」\n\n- 権限追加 = add\n- 権限削除 = del\n- 権限者一覧 = list\n\n- 終了 = cancel");
 			}else{
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
-			}
-		}else if(txt == "adminutil" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
-		
-		if(vx[1] == "!sms" && seq.from_ == vx[0] && waitMsg == "yes"){
-			let panjang = txt.split("");
-			if(txt == "cancel"){
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"#CANCELLED");
-			}else if(panjang.length >= 12 && vx[2] == "arg1"){
-				vx[4] = txt;
-				vx[2] = "arg2";
-				this._sendMessage(seq,"Ok apa pesan yang akan dikirim ?");
-			}else if(vx[2] == "arg2"){
-				this._xgetJson("http://dataninja.biz/","/dev/sms_api.php?kirimsms=kirim&nomor="+vx[4]+"&message="+textMessages,(result) => {
-					if(result.err===true){
-						this._sendMessage(seq,"Error:\n"+result.message);
-					}else{
-						this._sendMessage(seq,result.message);
-					}
-				});
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";vx[4] = "";
-			}else{
-				this._sendMessage(seq,"# How to !sms\nKirim nomor orang yang dituju !");
 			}
 		}
-		if(txt == "!sms" && !isBanned(banList,seq.from_)){
-			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
-			    waitMsg = "yes";
-			    vx[0] = seq.from_;vx[1] = txt;
-			    this._sendMessage(seq,"SMS ke siapa ?");
-				vx[2] = "arg1";
-				this._sendMessage(seq,"# Kirim nomor yang dituju");
-			}else{
-				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"#CANCELLED");
-			}
-		}else if(txt == "!sms" && isBanned(banList,seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		
 		
 		if(vx[1] == "unban" && seq.from_ == vx[0] && waitMsg == "yes"){
 			let panjang = txt.split("");
@@ -1074,10 +1037,10 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
                         banList.splice(ment, 1);
                     }
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-					bang.text = "Sudah bosku";
+					bang.text = "削除完了！";
 					this._client.sendMessage(0,bang);
 				}else{
-					bang.text = "Dia gk masuk daftar banned bos !";
+					bang.text = "ブラックリストユーザーではありません";
 					this._client.sendMessage(0, bang);
 				}
 			}else if(seq.contentType == 13){
@@ -1088,10 +1051,10 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
                         banList.splice(ment, 1);
                     }
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-					bang.text = "Sudah bosku";
+					bang.text = "削除完了！";
 					this._client.sendMessage(0,bang);
 				}else{
-					bang.text = "Dia gk masuk daftar banned bos !";
+					bang.text = "ブラックリストユーザーではありません";
 					this._client.sendMessage(0, bang);
 				}
 			}else if(panjang.length > 30 && panjang[0] == "u"){
@@ -1102,13 +1065,12 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
                         banList.splice(ment, 1);
                     }
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-					bang.text = "Sudah bosku";
+					bang.text = "削除完了！";
 					this._client.sendMessage(0,bang);
 				}else{
-					this._sendMessage(seq,"Dia gk masuk daftar banned bos !");
+					this._sendMessage(seq,"ブラックリストユーザーではありません");
 				}
 			}else{
-				this._sendMessage(seq,"# How to !unban\nKirim kontaknya / mid / tag orangnya yang mau di-unban");
 			}
 		}
 		if(txt == "unban" && isAdminOrBot(seq.from_)){
@@ -1121,16 +1083,16 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				    seq.text += "\n-["+orangnya[0].mid+"]["+orangnya[0].displayName+"]";
 				}
 				this._sendMessage(seq,seq.text);
-			    this._sendMessage(seq,"unban siapa ?");
+			    this._sendMessage(seq,"ブラックから削除をしたい人を指名してください\n#contact/mention/mid\n\n「cancel」キャンセルできます");
 				vx[2] = "arg1";
 			}else{
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == "unban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
-		if(txt == "banlist"){
-			seq.text = "[Mid] [Name]\n\n";
+		if(txt == "banlist" && isAdminOrBot(seq.from_)){
+			seq.text = "⇗ブラックリスト⇙\n[Mid] [Name]\n\n";
 			for(var i = 0; i < banList.length; i++){
 			    let orangnya = await this._getContacts([banList[i]]);
 				seq.text += "["+orangnya[0].mid+"]["+orangnya[0].displayName+"]\n";
@@ -1184,7 +1146,7 @@ Link Download: "+idU.id+"\n";
 			} else {
 			}
 		}
-		if(txt == "youtube" && !isBanned(seq.from_)){
+		if(txt == "youtube" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 				waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;
@@ -1194,261 +1156,7 @@ Link Download: "+idU.id+"\n";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == "youtube" && isBanned(seq.from_)){this._sendMessage(seq,"Not permitted !");}
-		
-		if(vx[1] == "animesearch" && seq.from_ == vx[0] && waitMsg == "yes"){
-			if(txt == "cancel"){
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"#CANCELLED");
-			}else if(vx[2] == "arg1" && seq.contentType == 1){
-				vx[2] = "arg2";vx[3] = seq.id;
-				let hasil;let hasiltxt = "「 Anime Guess 」\n\n";
-				this._download("https://obs-sg.line-apps.com/talk/m/download.nhn?oid="+seq.id+"&tid=original","img",0,(result) => {
-					const filepath = path.resolve(result);
-                    //let buffx = fs.readFileSync(filepath);
-                    // convert binary data to base64 encoded string
-					//let cmx = new command();
-                    this._base64Image(filepath, (result) => {
-					//let base64IMG = result.toString('base64');
-					let data = {
-					   method: 'POST',
-             		   uri: "https://whatanime.ga/search",
-             		   form: {
-						   data: result,
-            		       filter: "*",
-					       trial: 4},
-					   headers: {
-                           'Host':'whatanime.ga',
-                           'accept':'application/json, text/javascript, */*; q=0.01',
-                           'content-type':'application/x-www-form-urlencoded; charset=UTF-8',
-                           'origin':'https://whatanime.ga',
-                           'referer':'https://whatanime.ga/',
-                           'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-                           'x-requested-with':'XMLHttpRequest'
-                       },
-            		   //json: true // Automatically parses the JSON string in the response
-            		};
-					this._animePost(data,(result) => {
-						let ret = [];let M = new Message();M.to = seq.to;
-						for(var i = 0; i < result.docs.length; i++){
-							let xdocx = result.docs[i];
-							let anime = xdocx.anime;
-							let season = xdocx.season;
-							let filex = xdocx.file;
-							let startx = xdocx.start;
-							let endx = xdocx.end;
-							let tokenx = xdocx.token;
-							let tokenThumb = xdocx.tokenthumb;
-							let tox = xdocx.to;
-							let url_r = "https://whatanime.ga/"+season+"/"+encodeURI(anime)+"/"+encodeURI(filex)+"/?start="+startx+"&end="+endx+"&token="+tokenx;
-							let url_t = "https://whatanime.ga/thumbnail.php?season="+season+"&anime="+encodeURI(anime)+"&file="+encodeURI(filex)+"&t="+tox+"&token="+tokenx;
-							let xret = {
-								video: url_r,
-								thumbnail: url_t,
-								anime_name: anime,
-								season: season
-							};ret.push(xret);
-							hasiltxt += "Name: "+anime+"\nSeason: "+season+"\n\
-\n";
-						}
-						M.text = hasiltxt;
-						this._client.sendMessage(0,M);
-						
-					})
-				})})
-			}else if(vx[2] == "arg2" && txt == "page2"){
-				vx[2] = "arg3";
-				let hasil;let hasiltxt = "「 Anime Guess 」\n\n";
-				this._download("https://obs-sg.line-apps.com/talk/m/download.nhn?oid="+vx[3]+"&tid=original","img",0,(result) => {
-					const filepath = path.resolve(result);
-                    //let buffx = fs.readFileSync(filepath);
-                    // convert binary data to base64 encoded string
-					//let cmx = new command();
-                    this._base64Image(filepath, (result) => {
-					//let base64IMG = result.toString('base64');
-					let data = {
-					   method: 'POST',
-             		   uri: "https://whatanime.ga/search",
-             		   form: {
-						   data: result,
-            		       filter: "*",
-					       trial: 5},
-					   headers: {
-                           'Host':'whatanime.ga',
-                           'accept':'application/json, text/javascript, */*; q=0.01',
-                           'content-type':'application/x-www-form-urlencoded; charset=UTF-8',
-                           'origin':'https://whatanime.ga',
-                           'referer':'https://whatanime.ga/',
-                           'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-                           'x-requested-with':'XMLHttpRequest'
-                       },
-            		   //json: true // Automatically parses the JSON string in the response
-            		};
-					this._animePost(data,(result) => {
-						let ret = [];let M = new Message();M.to = seq.to;
-						for(var i = 0; i < result.docs.length; i++){
-							let xdocx = result.docs[i];
-							let anime = xdocx.anime;
-							let season = xdocx.season;
-							let filex = xdocx.file;
-							let startx = xdocx.start;
-							let endx = xdocx.end;
-							let tokenx = xdocx.token;
-							let tokenThumb = xdocx.tokenthumb;
-							let tox = xdocx.to;
-							let url_r = "https://whatanime.ga/"+season+"/"+encodeURI(anime)+"/"+encodeURI(filex)+"/?start="+startx+"&end="+endx+"&token="+tokenx;
-							let url_t = "https://whatanime.ga/thumbnail.php?season="+season+"&anime="+encodeURI(anime)+"&file="+encodeURI(filex)+"&t="+tox+"&token="+tokenx;
-							let xret = {
-								video: url_r,
-								thumbnail: url_t,
-								anime_name: anime,
-								season: season
-							};ret.push(xret);
-							hasiltxt += "Name: "+anime+"\nSeason: "+season+"\n\
-\n";
-						}
-						M.text = hasiltxt;
-						this._client.sendMessage(0,M);
-						
-					})
-				})})
-			} else if(vx[2] == "arg3" && txt == "page3"){
-				vx[2] = "arg4";
-				let hasil;let hasiltxt = "「 Anime Guess 」\n\n";
-				this._download("https://obs-sg.line-apps.com/talk/m/download.nhn?oid="+vx[3]+"&tid=original","img",0,(result) => {
-					const filepath = path.resolve(result);
-                    //let buffx = fs.readFileSync(filepath);
-                    // convert binary data to base64 encoded string
-					//let cmx = new command();
-                    this._base64Image(filepath, (result) => {
-					//let base64IMG = result.toString('base64');
-					let data = {
-					   method: 'POST',
-             		   uri: "https://whatanime.ga/search",
-             		   form: {
-						   data: result,
-            		       filter: "*",
-					       trial: 6},
-					   headers: {
-                           'Host':'whatanime.ga',
-                           'accept':'application/json, text/javascript, */*; q=0.01',
-                           'content-type':'application/x-www-form-urlencoded; charset=UTF-8',
-                           'origin':'https://whatanime.ga',
-                           'referer':'https://whatanime.ga/',
-                           'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-                           'x-requested-with':'XMLHttpRequest'
-                       },
-            		   //json: true // Automatically parses the JSON string in the response
-            		};
-					this._animePost(data,(result) => {
-						let ret = [];let M = new Message();M.to = seq.to;
-						for(var i = 0; i < result.docs.length; i++){
-							let xdocx = result.docs[i];
-							let anime = xdocx.anime;
-							let season = xdocx.season;
-							let filex = xdocx.file;
-							let startx = xdocx.start;
-							let endx = xdocx.end;
-							let tokenx = xdocx.token;
-							let tokenThumb = xdocx.tokenthumb;
-							let tox = xdocx.to;
-							let url_r = "https://whatanime.ga/"+season+"/"+encodeURI(anime)+"/"+encodeURI(filex)+"/?start="+startx+"&end="+endx+"&token="+tokenx;
-							let url_t = "https://whatanime.ga/thumbnail.php?season="+season+"&anime="+encodeURI(anime)+"&file="+encodeURI(filex)+"&t="+tox+"&token="+tokenx;
-							let xret = {
-								video: url_r,
-								thumbnail: url_t,
-								anime_name: anime,
-								season: season
-							};ret.push(xret);
-							hasiltxt += "Name: "+anime+"\nSeason: "+season+"\n\
-\n";
-						}
-						M.text = hasiltxt;
-						this._client.sendMessage(0,M);
-						
-					})
-				})})
-			} else if(vx[2] == "arg4" && txt == "page4"){
-				let hasil;let hasiltxt = "「 Anime Guess 」\n\n";
-				this._download("https://obs-sg.line-apps.com/talk/m/download.nhn?oid="+vx[3]+"&tid=original","img",0,(result) => {
-					const filepath = path.resolve(result);
-                    //let buffx = fs.readFileSync(filepath);
-                    // convert binary data to base64 encoded string
-					//let cmx = new command();
-                    this._base64Image(filepath, (result) => {
-					//let base64IMG = result.toString('base64');
-					let data = {
-					   method: 'POST',
-             		   uri: "https://whatanime.ga/search",
-             		   form: {
-						   data: result,
-            		       filter: "*",
-					       trial: 7},
-					   headers: {
-                           'Host':'whatanime.ga',
-                           'accept':'application/json, text/javascript, */*; q=0.01',
-                           'content-type':'application/x-www-form-urlencoded; charset=UTF-8',
-                           'origin':'https://whatanime.ga',
-                           'referer':'https://whatanime.ga/',
-                           'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-                           'x-requested-with':'XMLHttpRequest'
-                       },
-            		   //json: true // Automatically parses the JSON string in the response
-            		};
-					this._animePost(data,(result) => {
-						let ret = [];let M = new Message();M.to = seq.to;
-						for(var i = 0; i < result.docs.length; i++){
-							let xdocx = result.docs[i];
-							let anime = xdocx.anime;
-							let season = xdocx.season;
-							let filex = xdocx.file;
-							let startx = xdocx.start;
-							let endx = xdocx.end;
-							let tokenx = xdocx.token;
-							let tokenThumb = xdocx.tokenthumb;
-							let tox = xdocx.to;
-							let url_r = "https://whatanime.ga/"+season+"/"+encodeURI(anime)+"/"+encodeURI(filex)+"/?start="+startx+"&end="+endx+"&token="+tokenx;
-							let url_t = "https://whatanime.ga/thumbnail.php?season="+season+"&anime="+encodeURI(anime)+"&file="+encodeURI(filex)+"&t="+tox+"&token="+tokenx;
-							let xret = {
-								video: url_r,
-								thumbnail: url_t,
-								anime_name: anime,
-								season: season
-							};ret.push(xret);
-							hasiltxt += "Name: "+anime+"\nSeason: "+season+"\n\
-\n";
-						}
-						M.text = hasiltxt;
-						this._client.sendMessage(0,M);
-						this._sendMessage(seq,"Max page 4");
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						
-					})
-				})})
-			} else if(vx[2] == "arg2" && txt !== "page2"){
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"# STOPPED");
-			} else if(vx[2] == "arg3" && txt !== "page3"){
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"# STOPPED");
-			} else if(vx[2] == "arg4" && txt !== "page4"){
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"# STOPPED");
-			} else {
-				this._sendMessage(seq,"# How to !animesearch\nKirim gambarnya yang akan dicari !");
-			}
 		}
-		if(txt == "animesearch" && !isBanned(seq.from_)){
-			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
-				waitMsg = "yes";
-			    vx[0] = seq.from_;vx[1] = txt;
-			    this._sendMessage(seq,"Mau cari anime pake gambar bang ? OK, kirim gambarnya !");
-				vx[2] = "arg1";
-			}else{
-				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"#CANCELLED");
-			}
-		}else if(txt == "animesearch" && isBanned(seq.from_)){this._sendMessage(seq,"Not permitted !");}
 		
 		
 		if(vx[1] == "tts" && seq.from_ == vx[0] && waitMsg == "yes"){
@@ -1479,7 +1187,7 @@ Link Download: "+idU.id+"\n";
 				this._sendMessage(seq,"Char yang hanya diperbolehkan:\nA-Z (no case sensitive)\n0-9 (number)");
 			}
 		}
-		if(txt == "tts" && !isBanned(seq.from_)){
+		if(txt == "tts" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 				waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;
@@ -1490,7 +1198,7 @@ Link Download: "+idU.id+"\n";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == "tts" && isBanned(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		if(vx[1] == "botleft" && seq.from_ == vx[0] && waitMsg == "yes"){
 			if(txt == "cancel"){
@@ -1515,7 +1223,7 @@ Link Download: "+idU.id+"\n";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == "botleft" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		if(txt == "!mute" && isAdminOrBot(seq.from_)){
 			this.stateStatus.mute = 1;
@@ -1524,10 +1232,10 @@ Link Download: "+idU.id+"\n";
 		
         if(txt == 'cancel' && this.stateStatus.cancel == 1 && isAdminOrBot(seq.from_)) {
             this.cancelAll(seq.to);
-        }else if(txt == "cancel" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+	}
 
 
-		if(vx[1] == "!grouputil" && seq.from_ == vx[0] && waitMsg == "yes"){
+		if(vx[1] == "grouputil" && seq.from_ == vx[0] && waitMsg == "yes"){
 			if(vx[2]=="arg1"){
 			let M = new Message();
 			let listGroups = await this._client.getGroupIdsJoined();
@@ -1566,7 +1274,7 @@ Link Download: "+idU.id+"\n";
 					M.text = xtxt;
 					this._client.sendMessage(0, M);				
 				break;
-				default:
+				case 'cancel':
 				 vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 				 this._sendMessage(seq,"#CANCELLED");
 			}}else if(vx[2] == "arg2" && vx[3] == "ticket"){
@@ -1582,7 +1290,7 @@ Link Download: "+idU.id+"\n";
 				}else{this._sendMessage(seq,"Group tidak ada !");}
 			}
 		}
-		if(txt == "!grouputil" && isAdminOrBot(seq.from_)){
+		if(txt == "grouputil" && isAdminOrBot(seq.from_)){
 			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
 				waitMsg = "yes";
 			    vx[0] = seq.from_;vx[1] = txt;
@@ -1592,7 +1300,7 @@ Link Download: "+idU.id+"\n";
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"#CANCELLED");
 			}
-		}else if(txt == "!grouputil" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		if(cox[0] == "broadcast" && isAdminOrBot(seq.from_) && cox[1]){
             let listMID = [];
@@ -1610,12 +1318,12 @@ Link Download: "+idU.id+"\n";
                     this._client.sendMessage(0, bcm);
 	        	}
             }
-        }else if(cox[0] == "broadcast" && isAdminOrBot(seq.from_) && !cox[1]){this._sendMessage(seq,"# How to broadcast:\nbroadcast yourtexthere");}else if(cox[0] == "broadcast" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted!");}
+	}
 		
-		if(txt == "!kickme" && seq.toType == 2 && !isBanned(banList, seq.from_) && this.stateStatus.kick == 1){
+		if(txt == "!kickme" && seq.toType == 2 && isAdminOrBot(seq.from_) && this.stateStatus.kick == 1){
 			this._sendMessage(seq,"Ok bang !");
 			this._kickMember(seq.to,[seq.from_]);
-		}else if(txt == '!kickme' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		
 		if(txt == "refresh" && isAdminOrBot(seq.from_)){
@@ -1660,7 +1368,7 @@ Link Download: "+idU.id+"\n";
                     this._kickMember(seq.to,[listMember[i].mid])
                 }
             }
-        }else if(txt === '!kickall' && !isAdminOrBot(seq.from_) && seq.toType == 2){this._sendMessage(seq,"Not permitted !");}
+	}
 		
 		if(txt == 'test' && isAdminOrBot(seq.from_)) {
 			let botOwner = await this._client.getContacts([myBot[0]]);
@@ -1801,14 +1509,14 @@ Link Download: "+idU.id+"\n";
 			await this._createAlbum(seq.to,cox[1],this.config.chanToken);
 		}
 		
-		if(txt == "!kickban" && isAdminOrBot(seq.from_)){
+		if(txt == "kickban" && isAdminOrBot(seq.from_)){
 			for(var i = 0; i < banList.length; i++){
 				let adaGk = await this.isInGroup(seq.to, banList[i]);
 				if(typeof adaGk !== "undefined" && adaGk){
 					this._kickMember(seq.to,adaGk);
 				}
 			}
-		}else if(txt == "!kickban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		if(txt == "setting"){
 			this.setState(seq,1)
@@ -1829,7 +1537,7 @@ Link Download: "+idU.id+"\n";
             })
         }*/
 		
-		if(txt == "now" && isBanned(banList,seq.from_)){
+		if(txt == "now" && isAdminOrBot(seq.from_)){
 			let d = new Date();let xmenit = d.getMinutes().toString().split("");
 			if(xmenit.length < 2){
 				this._sendMessage(seq, d.getHours()+"時0"+d.getMinutes()+"分");
