@@ -74,13 +74,13 @@ by.Seiji@KnF";
 # KeywordList\n\
 >-->>Setting<<--<\n\
 => setting\n\
-保護の設定状況確認\n\
+設定状況確認\n\
 => autojoin on/off\n\
 グル自動参加\n\
 => cancel on/off\n\
 グル自動拒否\n\
 => kick on/off\n\
-強制蹴り対象者招待\n\
+強制蹴り対象者自動招待\n\
 => protect on/off\n\
 強制蹴り、招待URL保護\n\
 #onにするとkickも連動してonになります\n\
@@ -110,9 +110,9 @@ by.Seiji@KnF";
 => gurl\n\
 => curl\n\
 >-->>Self<<--<\n\
-=> test\n\
 => addcontact\n\
 => adminutil\n\
+=> grouputil\n\
 => ban\n\
 => unban\n\
 => banlist\n\
@@ -121,18 +121,17 @@ by.Seiji@KnF";
 => broadcast\n\
 => cancel\n\
 => cekid\n\
-=> grouputil\n\
 => kepo\n\
-=> kickban\n\
-=> !kickall\n\
-=> !kickme\n\
+=> kickall\n\
+=> kickme\n\
 => msg\n\
-=> !mute\n\
-=> !unmute\n\
+=> mute\n\
+=> unmute\n\
 => myid\n\
 => refresh\n\
 => sendcontact\n\
-=> speed\sp\n\
+=> speed|sp\n\
+=> test\n\
 => tts\n\
 => now\n\
 => gift\n\
@@ -163,14 +162,10 @@ by.Seiji@KnF";
             if(waitMsg == "yes" && operation.message.from_ == vx[0] && this.stateStatus.mute != 1){
 				this.textMessage(txt,message,message.text)
 			}else if(this.stateStatus.mute != 1){this.textMessage(txt,message);
-			}else if(txt == "!unmute" && isAdminOrBot(operation.message.from_) && this.stateStatus.mute == 1){
+			}else if(txt == "unmute" && isAdminOrBot(operation.message.from_) && this.stateStatus.mute == 1){
 			    this.stateStatus.mute = 0;
-			    this._sendMessage(message,"ヽ(^。^)ノ")
+			    this._sendMessage(message,"コマンドの反応をオンにしました！")
 		    }else{console.info("muted");}
-        }
-
-        if(operation.type == 13 && this.stateStatus.cancel == 1 && !isAdminOrBot(operation.param2)) {//someone inviting..
-            this.cancelAll(operation.param1);
         }
 		
 		//if(operation.type == 2 || operation.type == 1 || operation.type == 53 || operation.type == 43 || operation.type == 41 || operation.type == 24 || operation.type == 15 || operation.type == 21){console.info(operation);}
@@ -297,13 +292,6 @@ by.Seiji@KnF";
 		    this._autoLike(config.chanToken,limitposts,komenTL);
 		}
 	}
-
-    async cancelAll(gid) {
-        let { listPendingInvite } = await this.searchGroup(gid);
-        if(listPendingInvite.length > 0){
-            this._cancel(gid,listPendingInvite);
-        }
-    }
 
     async searchGroup(gid) {
         let listPendingInvite = [];
@@ -801,7 +789,7 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			}
 		}
 		
-		if(vx[1] == "msg" && seq.from_ == vx[0] && waitMsg == "yes" && isAdminOrBot(seq.from_)){
+		if(vx[1] == "msg" && seq.from_ == vx[0] && waitMsg == "yes"){
 			//vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			let panjang = txt.split("");
 			if(txt == "cancel"){
@@ -1225,15 +1213,10 @@ Link Download: "+idU.id+"\n";
 			}
 		}
 		
-		if(txt == "!mute" && isAdminOrBot(seq.from_)){
+		if(txt == "mute" && isAdminOrBot(seq.from_)){
 			this.stateStatus.mute = 1;
-			this._sendMessage(seq,"(*´﹃｀*)")
+			this._sendMessage(seq,"コマンドの反応をオフにしました。\n※unmuteでオンに出来ます！")
 		}
-		
-        if(txt == 'cancel' && this.stateStatus.cancel == 1 && isAdminOrBot(seq.from_)) {
-            this.cancelAll(seq.to);
-	}
-
 
 		if(vx[1] == "grouputil" && seq.from_ == vx[0] && waitMsg == "yes"){
 			if(vx[2]=="arg1"){
@@ -1320,8 +1303,8 @@ Link Download: "+idU.id+"\n";
             }
 	}
 		
-		if(txt == "!kickme" && seq.toType == 2 && isAdminOrBot(seq.from_) && this.stateStatus.kick == 1){
-			this._sendMessage(seq,"Ok bang !");
+		if(txt == "kickme" && seq.toType == 2 && isAdminOrBot(seq.from_) && this.stateStatus.kick == 1){
+			this._sendMessage(seq,"グループを退会します");
 			this._kickMember(seq.to,[seq.from_]);
 		}
 		
@@ -1361,7 +1344,7 @@ Link Download: "+idU.id+"\n";
             })
         }*/
 
-        if(txt === '!kickall' && this.stateStatus.kick == 1 && isAdminOrBot(seq.from_) && seq.toType == 2) {
+        if(txt === 'kickall' && this.stateStatus.kick == 1 && isAdminOrBot(seq.from_) && seq.toType == 2) {
             let { listMember } = await this.searchGroup(seq.to);
             for (var i = 0; i < listMember.length; i++) {
                 if(!isAdminOrBot(listMember[i].mid)){
@@ -1496,7 +1479,7 @@ Link Download: "+idU.id+"\n";
             this.checkReader = [];
         }
 		
-		if(txt == 'botcontact'){
+		if(txt == 'botcontact' && isAdminOrBot(seq.from_)){
 			let probot = await this._client.getProfile();
 			let settings = await this._client.getSettings();
 			let emailbot = settings.identityIdentifier;
@@ -1509,15 +1492,6 @@ Link Download: "+idU.id+"\n";
 			await this._createAlbum(seq.to,cox[1],this.config.chanToken);
 		}
 		
-		if(txt == "kickban" && isAdminOrBot(seq.from_)){
-			for(var i = 0; i < banList.length; i++){
-				let adaGk = await this.isInGroup(seq.to, banList[i]);
-				if(typeof adaGk !== "undefined" && adaGk){
-					this._kickMember(seq.to,adaGk);
-				}
-			}
-		}
-		
 		if(txt == "setting"){
 			this.setState(seq,1)
 		}
@@ -1527,15 +1501,9 @@ Link Download: "+idU.id+"\n";
             this.setState(seq,0)
         }
 	
-        if(txt == 'myid' /*|| txt == 'mid' || txt == 'id'*/) {
-            this._sendMessage(seq,"ID Kamu: "+seq.from_);
+        if(txt == 'myid' && isAdminOrBot(seq.from_)) {
+            this._sendMessage(seq,seq.from_);
         }
-		
-       /* if(txt == 'speedtest' && isAdminOrBot(seq.from)) {
-            exec('speedtest-cli --server 6581',(err, res) => {
-                    this._sendMessage(seq,res)
-            })
-        }*/
 		
 		if(txt == "now" && isAdminOrBot(seq.from_)){
 			let d = new Date();let xmenit = d.getMinutes().toString().split("");
