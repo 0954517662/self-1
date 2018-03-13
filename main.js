@@ -10,6 +10,7 @@ const { Message, OpType, Location } = require('../curve-thrift/line_types');
 //let exec = require('child_process').exec;
 
 const myBot = ['ub126c53031b74c56f8379738707c2851'];
+const admin = ['ub126c53031b74c56f8379738707c2851'];
 const banList = [];//Banned list
 var groupList = new Array();//Group list
 var vx = {};var midnornama,pesane,kickhim;var waitMsg = "no";//DO NOT CHANGE THIS
@@ -20,6 +21,10 @@ var limitposts = '10'; //Output timeline post
 
 function isAdminOrBot(param) {
     return myBot.includes(param);
+}
+
+function isAdmin(param) {
+    return admin.includes(param);
 }
 
 function isBanned(banList, param) {
@@ -52,9 +57,8 @@ class LINE extends LineAPI {
         super();
 		this.limitposts = limitposts; //Output timeline post
         this.receiverID = '';
-        this.checkReader = [];
         this.stateStatus = {
-			autojoin: 1, //0 = No, 1 = Yes
+			autojoin: 0, //0 = No, 1 = Yes
             cancel: 0, //0 = Auto cancel off, 1 = on
             kick: 0, //1 = Yes, 0 = No
 			mute: 0, //1 = Mute, 0 = Unmute
@@ -63,7 +67,44 @@ class LINE extends LineAPI {
 			salam: 0 //1 = Yes, 0 = No
         }
                 this.jphelp = "\n\
-# KeywordList\n\
+# キーワード一覧\n\
+=> help jp\n\
+詳細コマンド日本語版\n\
+>-->>Group<<--<\n\
+グループ保護系コマンド\n\
+=> ginfo：グル情報を取得します\n\
+=> tagall：メンバー全員をメンションします\n\
+=> cancel：招待中をキャンセルします\n\
+=> kickall：メンバー全員を強制退出させます\n\
+=> left：グループから退出します\n\
+=> gurl：リンク/QRコードを更新後、それを使用した招待を許可します\n\
+=> ourl：リンク/QRコードを使用した招待を許可します\n\
+=> curl：リンク/QRコードを使用した招待をブロックします\n\
+※上記のコマンドはグループトークのみ使用できます\n\
+>-->>Self<<--<\n\
+便利系コマンド\n\
+=> addcontact：メンション/mid/連絡先から友達追加します\n\
+=> adminutil：権限管理システムを起動します\n\
+=> grouputil：グル管理システムを起動します\n\
+=> ban：ブラックリストに追加します\n\
+=> unban：ブラックリストから削除します\n\
+=> botcontact：自分の追加URL/IDを表示します\n\
+=> botleft：\n\
+=> broadcast：\n\
+=> cekid：メンション/連絡先からidを取得します\n\
+=> kepo：メンション/id/連絡先からプロフを取得します\n\
+=> sendcontact：メンション/idから連絡先を取得します\n\
+=> msg：メンション/id/連絡先からメッセージを送信します\n\
+=> mute：コマンドに反応しなくします\n\
+=> unmute：コマンドに反応するようにします\n\
+=> myid：自分のidを取得します\n\
+=> refresh：全てのトーク履歴を削除します\n\
+=> speed|sp|.sp：処理速度を計測します\n\
+=> test：動作状況確認をします\n\
+=> tts：ボイスメモを作成します\n\
+=> now：グリニッジ時刻を取得します\n\
+=> gift：プレゼントを送ります\n\
+=> youtube：YoutubeLinkからダウンロードリンクに変換します\n\
 ===============\n\
 # CreatorBot:\n\
 line://ti/p/4SlGRqnWpE\n\
@@ -106,8 +147,11 @@ by.Seiji@KnF";
 >-->>Group<<--<\n\
 => ginfo\n\
 => tagall\n\
+=> cancel\n\
+=> kickall\n\
+=> left\n\
 => gurl\n\
-=> gurl\n\
+=> ourl\n\
 => curl\n\
 >-->>Self<<--<\n\
 => addcontact\n\
@@ -119,18 +163,15 @@ by.Seiji@KnF";
 => botcontact\n\
 => botleft\n\
 => broadcast\n\
-=> cancel\n\
 => cekid\n\
 => kepo\n\
-=> kickall\n\
-=> kickme\n\
+=> sendcontact\n\
 => msg\n\
 => mute\n\
 => unmute\n\
 => myid\n\
 => refresh\n\
-=> sendcontact\n\
-=> speed|sp\n\
+=> speed|sp|.sp\n\
 => test\n\
 => tts\n\
 => now\n\
@@ -255,32 +296,13 @@ by.Seiji@KnF";
 			this.textMessage("0103",seq,operation.param2,1);
 		}
 
-        if(operation.type == 55){ //ada reader
-
-            const idx = this.checkReader.findIndex((v) => {
-                if(v.group == operation.param1) {
-                    return v
-                }
-            })
-            if(this.checkReader.length < 1 || idx == -1) {
-                this.checkReader.push({ group: operation.param1, users: [operation.param2], timeSeen: [operation.param3] });
-            } else {
-                for (var i = 0; i < this.checkReader.length; i++) {
-                    if(this.checkReader[i].group == operation.param1) {
-                        if(!this.checkReader[i].users.includes(operation.param2)) {
-                            this.checkReader[i].users.push(operation.param2);
-                            this.checkReader[i].timeSeen.push(operation.param3);
-                        }
-                    }
-                }
-            }
-        }
-
         if(operation.type == 13) { // diinvite
             if(this.stateStatus.autojoin == 1 || isAdminOrBot(operation.param2)) {
-                return this._acceptGroupInvitation(operation.param1);
+		let _this = this;
+		setTimeout( function() {
+		    return _this._acceptGroupInvitation(operation.param1);
+		}, 3000 );
             } else {
-                return this._cancel(operation.param1,operation.param2);
             }
         }
         this.getOprationType(operation);
@@ -480,20 +502,6 @@ by.Seiji@KnF";
             cmddata: { MENTION: `{"MENTIONEES":[${mentionMember}]}` }
         }
     }
-
-    async recheck(cs,group) {
-        let users;
-        for (var i = 0; i < cs.length; i++) {
-            if(cs[i].group == group) {
-                users = cs[i].users;
-            }
-        }
-        
-        let contactMember = await this._getContacts(users);
-        return contactMember.map((z) => {
-                return { displayName: z.displayName, mid: z.mid };
-            });
-    }
 	
 	async leftGroupByName(payload) {
         let groupID = await this._getGroupsJoined();
@@ -506,18 +514,6 @@ by.Seiji@KnF";
                 }
             }
 	    }
-    }
-
-    removeReaderByGroup(groupID) {
-        const groupIndex = this.checkReader.findIndex(v => {
-            if(v.group == groupID) {
-                return v
-            }
-        })
-
-        if(groupIndex != -1) {
-            this.checkReader.splice(groupIndex,1);
-        }
     }
 
     async textMessage(textMessages, seq, param, lockt) {
@@ -651,7 +647,7 @@ by.Seiji@KnF";
 			}
 		}
 		
-		if(vx[1] == "cekid" && seq.from_ == vx[0] && waitMsg == "yes" && isAdminOrBot(seq.from_)){
+		if(vx[1] == "cekid" && seq.from_ == vx[0] && waitMsg == "yes"){
 			let panjang = txt.split("");
 			if(txt == "cancel"){
 				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
@@ -1088,7 +1084,7 @@ vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			this._sendMessage(seq,seq.text);
 		}
 		
-		if(txt == "!left" && isAdminOrBot(seq.from_)){
+		if(txt == "left" && isAdminOrBot(seq.from_)){
 			this._client.leaveGroup(0,seq.to);
 		}
 		
@@ -1303,12 +1299,6 @@ Link Download: "+idU.id+"\n";
             }
 	}
 		
-		if(txt == "kickme" && seq.toType == 2 && isAdminOrBot(seq.from_) && this.stateStatus.kick == 1){
-			this._sendMessage(seq,"グループを退会します");
-			this._kickMember(seq.to,[seq.from_]);
-		}
-		
-		
 		if(txt == "refresh" && isAdminOrBot(seq.from_)){
 			this._sendMessage(seq, "Clean all message....");
 			await this._client.removeAllMessages();
@@ -1344,7 +1334,7 @@ Link Download: "+idU.id+"\n";
             })
         }*/
 
-        if(txt === 'kickall' && this.stateStatus.kick == 1 && isAdminOrBot(seq.from_) && seq.toType == 2) {
+        if(txt === 'kickall' && isAdminOrBot(seq.from_) && seq.toType == 2) {
             let { listMember } = await this.searchGroup(seq.to);
             for (var i = 0; i < listMember.length; i++) {
                 if(!isAdminOrBot(listMember[i].mid)){
@@ -1384,6 +1374,11 @@ Link Download: "+idU.id+"\n";
 			this._client.sendMessage(0, seq);
 		}
 
+		if(txt == 'spam' && isAdminOrBot(seq.from_)) {
+			for (var i = 0; i < 10; i++) {
+				this._sendMessage(seq,'✋(◉ ω ◉｀)よお');
+			}
+		}
 		
 		if(txt == '0101' && lockt == 1) {//Jangan dicoba (gk ada efek)
             let { listMember } = await this.searchGroup(seq.to);
@@ -1451,33 +1446,6 @@ Link Download: "+idU.id+"\n";
                 }
             }
         }
-
-        if(txt == 'setpoint') {
-            this._sendMessage(seq, `Setpoint for check reader.`);
-            this.removeReaderByGroup(seq.to);
-        }
-
-        if(txt == 'clear') {
-            this.checkReader = []
-            this._sendMessage(seq, `Remove all check reader on memory`);
-        }  
-
-        if(txt == 'recheck'){
-            let rec = await this.recheck(this.checkReader,seq.to);seq.text='';
-            const mentions = await this.mention(rec);
-            for(var i = 0; i < mentions.length; i++){
-				seq.text += '\n=> '+mentions[i].displayName;
-			}
-            this._client.sendMessage(0,seq);  
-        }
-
-        if(txt == 'setpoint for check reader .') {
-            this.searchReader(seq);
-        }
-
-        if(txt == 'clearall') {
-            this.checkReader = [];
-        }
 		
 		if(txt == 'botcontact' && isAdminOrBot(seq.from_)){
 			let probot = await this._client.getProfile();
@@ -1492,7 +1460,7 @@ Link Download: "+idU.id+"\n";
 			await this._createAlbum(seq.to,cox[1],this.config.chanToken);
 		}
 		
-		if(txt == "setting"){
+		if(txt == "setting" && isAdminOrBot(seq.from_)){
 			this.setState(seq,1)
 		}
 		
@@ -1556,7 +1524,9 @@ Link Download: "+idU.id+"\n";
             if(updateGroup.preventJoinByTicket === true) {
                 updateGroup.preventJoinByTicket = false;
 				await this._updateGroup(updateGroup);
-            }
+				seq.text = "許可しました！";
+	    }else{seq.text = "既に許可されています！";}
+	    this._sendMessage(seq,seq.text);
 			const groupUrl = await this._reissueGroupTicket(seq.to)
             this._sendMessage(seq,`line://ti/g/${groupUrl}`);
         }else if(joinByUrl.includes(txt) && txt == "curl" && isAdminOrBot(seq.from_)) {
